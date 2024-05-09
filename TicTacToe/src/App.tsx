@@ -62,6 +62,7 @@ export default function Game() {
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
+  const checkMove = currentMove;
 
   function handlePlay(nextSquares: any) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -75,14 +76,27 @@ export default function Game() {
 
   const moves = history.map((_squares, move) => {
     let description;
-    if (move > 0) {
+
+    if (move === checkMove) {
+      if (checkMove === 0) {
+        description = 'Game Start!';
+      }
+      else{
+        description = 'You are on move #' + move + ' now.';
+      }
+    } else if (move > 0) {
       description = 'Go to move #' + move;
     } else {
       description = 'Go to game start';
     }
+
     return (
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+        {move === checkMove ? (
+          <div>{description}</div>
+        ) : (
+          <button onClick={() => jumpTo(move)}>{description}</button>
+        )}
       </li>
     );
   });
