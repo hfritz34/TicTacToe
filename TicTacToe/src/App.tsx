@@ -86,10 +86,10 @@ export default function Game() {
         description = 'Game Start!';
       }
       else{
-        description = 'You are on move #' + move + ' now.';
+        description = 'You are on move #' + (move +1) + ' now.';
       }
     } else if (move > 0) {
-      description = 'Go to move #' + move;
+      description = 'Go to move #' + move + ' at ' + Math.floor((move - 1) / 3) + ',' + ((move - 1) % 3);
     } else {
       description = 'Go to game start';
     }
@@ -99,7 +99,7 @@ export default function Game() {
         {move === checkMove ? (
           <div>{description}</div>
         ) : (
-          <button onClick={() => jumpTo(move)}>{description}</button>
+          <button onClick={() => jumpTo(move)}>{description}</button> 
         )}
       </li>
     );
