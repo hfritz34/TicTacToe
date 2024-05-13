@@ -41,6 +41,10 @@
   justify-content: center; 
   cursor: pointer; 
 }
+.square.highlight {
+  background-color: yellow;
+}
+
 
 @keyframes logo-spin {
   from {
