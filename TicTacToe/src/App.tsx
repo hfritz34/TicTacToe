@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import './App.css';
 
-function Square({ value, onSquareClick, highlight }: { value: any, onSquareClick: any, highlight: boolean }) {
+function Square({ value, onSquareClick, highlight }: { value: string, onSquareClick: () => void, highlight: boolean }) {
   return (
     <button className={`square ${highlight ? 'highlight' : ''}`} onClick={onSquareClick}>
       {value}
@@ -10,7 +10,7 @@ function Square({ value, onSquareClick, highlight }: { value: any, onSquareClick
   );
 }
 
-function Board({ xIsNext, squares, onPlay }: { xIsNext: boolean, squares: any[], onPlay: any }) {
+function Board({ xIsNext, squares, onPlay }: { xIsNext: boolean, squares: string[], onPlay: (nextSquares: string[]) => void }) {
  const winnerData = calculateWinner(squares);
  const line = winnerData ? winnerData.line : [];
 
@@ -68,13 +68,13 @@ export default function Game() {
   const currentSquares = history[currentMove];
   const checkMove = currentMove;
 
-  function handlePlay(nextSquares: any) {
+  function handlePlay(nextSquares: string[]) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
   }
 
-  function jumpTo(nextMove: any) {
+  function jumpTo(nextMove: number) {
     setCurrentMove(nextMove);
   }
 
@@ -86,7 +86,7 @@ export default function Game() {
         description = 'Game Start!';
       }
       else{
-        description = 'You are on move #' + (move +1) + ' now.';
+        description = 'You are on move #' + (move) + ' now.';
       }
     } else if (move > 0) {
       description = 'Go to move #' + move + ' at ' + Math.floor((move - 1) / 3) + ',' + ((move - 1) % 3);
@@ -120,7 +120,7 @@ export default function Game() {
   );
 }
 
-function calculateWinner(squares: any) {
+function calculateWinner(squares: string[]) {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
