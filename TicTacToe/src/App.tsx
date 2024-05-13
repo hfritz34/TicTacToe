@@ -1,16 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useState } from 'react';
 import './App.css';
 
-function Square({ value, onSquareClick }: { value: any, onSquareClick: any }) {
+function Square({ value, onSquareClick, highlight }: { value: any, onSquareClick: any, highlight: boolean }) {
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button className={`square ${highlight ? 'highlight' : ''}`} onClick={onSquareClick}>
       {value}
     </button>
   );
 }
 
 function Board({ xIsNext, squares, onPlay }: { xIsNext: boolean, squares: any[], onPlay: any }) {
+ const winnerData = calculateWinner(squares);
+ const line = winnerData ? winnerData.line : [];
 
   function handleClick(i: number) {
     if (squares[i] || calculateWinner(squares)) {
@@ -25,28 +27,28 @@ function Board({ xIsNext, squares, onPlay }: { xIsNext: boolean, squares: any[],
         onPlay(nextSquares);
       
  }
-
-  const winner = calculateWinner(squares);
-    let status;
-    if (winner) {
-      status = "Winner: " + winner;
-    } else {
-      status = "Next player: " + (xIsNext ? "X" : "O");
-    }
-
-const createBoard = () => {
-  const board = [];
-  const size = 3;
-  for(let row = 0; row < size; row++){
-    const boardRow = [];
-    for(let col = 0; col <size; col++){
-      const i = row * size + col;
-      boardRow.push(<Square key={i} value={squares[i]} onSquareClick={() => handleClick(i)} />);
-    }
-    board.push(<div key={row} className="board-row">{boardRow}</div>); 
+  let status;
+  if (winnerData) {
+    status = "Winner: " + winnerData.winner; 
+  } else if (squares.every(square => square !== null)) {
+    status = "It's a draw!";
+  } else {
+    status = "Next player: " + (xIsNext ? "X" : "O");
   }
-  return board;
-}
+    const createBoard = () => {
+      const board = [];
+      const size = 3;
+      for (let row = 0; row < size; row++) {
+        const boardRow = [];
+        for (let col = 0; col < size; col++) {
+          const idx = row * size + col;
+          const highlight = line.includes(idx);
+          boardRow.push(<Square key={idx} value={squares[idx]} onSquareClick={() => handleClick(idx)} highlight={highlight} />);
+        }
+        board.push(<div key={row} className="board-row">{boardRow}</div>);
+      }
+      return board;
+    }
 return (
   <>
   <div className="status">{status}</div>
@@ -131,9 +133,10 @@ function calculateWinner(squares: any) {
   ];
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) { 
+      return { winner: squares[a], line: lines[i] };
     }
+
   }
   return null;
 }
